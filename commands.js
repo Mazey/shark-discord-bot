@@ -55,6 +55,7 @@ Commands.Help = function(member)
 		if (member.roles.has(modRole.id))
 		{
 			member.send(Config.helpMessage_Mod);
+			return;
 		}
 	});
 };

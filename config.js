@@ -1,19 +1,18 @@
-module.exports = {
-	key : "MzY0NzE3NDg2MDY0NjY0NTc3.DLT1JA.G6x0GHzTGK6G1vtNXKdQNj3-PAc",
+var Config = {};
 
-	modroles : ["Moderator", "Administrator"],
+	Config.key = "";
+	Config.prefix = "!";
+	Config.modroles = ["Moderator", "Administrator"];
 
-	prefix : "!",
-
-	joinableRoles : {
+	Config.joinableRoles = {
 		openRoles : ["Captaineer"],
 		locationRoles : ["EU", "OC", "NA", "SA", "AN", "AF", "AS"]
-	},
+	};
 
-	matchmaking_channel : "339006421721153537",
-	welcome_channel : "361184531186712576",
+	Config.matchmaking_channel = "339006421721153537";
+	Config.welcome_channel = "361184531186712576";
 
-	rules : [
+	Config.rules = [
 		{
 			alias : "commonsense",
 			rule : "Use common sense."
@@ -53,6 +52,11 @@ module.exports = {
 		{
 			alias : "illegal",
 			rule : "No illegal content."
+		},
+		{
+			alias : "language",
+			rule : "You are expected to talk English in this server. Messages in other languages may be removed."
 		}
-	]
-}
+	];
+
+module.exports = Config;

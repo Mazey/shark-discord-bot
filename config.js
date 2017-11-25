@@ -24,16 +24,12 @@ Config.rules = [
 		rule : "Keep it PG-13. (read: NSFW is a no-no)"
 	},
 	{
-		alias : "hateful",
-		rule : "Don't be a hateful. If you can't control your emotions, best take a break."
-	},
-	{
 		alias : "softskinned",
 		rule : "Don't be too soft-skinned. If you're getting flamed, tag a moderator and let them handle it."
 	},
 	{
 		alias : "respect",
-		rule : "Respect everyone. Talking smack can be fun but keep in mind that you're communicating with humans here."
+		rule : "Respect everyone and don't be hateful. Talking smack can be fun but keep in mind that you're communicating with humans here."
 	},
 	{
 		alias : "offtopic",

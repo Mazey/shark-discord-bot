@@ -27,7 +27,7 @@ client.on('message', (msg) => {
 		  	}
 		}
 
-		var deleteMessage = onCommand(command, params, msg.member, msg); 
+		var deleteMessage = onCommand(command, params, msg); 
 
 		if (deleteMessage)
 		{

@@ -6,7 +6,7 @@ Commands.Role = function(param, member)
 {
 	var openRoles = Config.joinableRoles.openRoles;
 	var locationRoles = Config.joinableRoles.locationRoles;
-	var _split = btoa("King Arthur's Gold");
+	var _split = ("King Arthur's Gold").toString('base64');
 
 	if (!(openRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase()) || locationRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase())))
 	{

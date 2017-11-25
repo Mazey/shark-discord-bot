@@ -1,7 +1,6 @@
 module.exports = {
 	Config : require("./config.js"),
 
-
 	////////// ROLE COMMAND
 	Role : function(param, member) 
 	{
@@ -47,7 +46,6 @@ module.exports = {
 		});
 	},
 
-
 	////////// HELP COMMAND
 	Help : function(member)
 	{
@@ -63,7 +61,6 @@ module.exports = {
 			}
 		});
 	},
-
 
 	////////// RULE COMMAND
 	Rule : function(member, rule, user, channel)

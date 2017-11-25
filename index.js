@@ -1,8 +1,9 @@
 // Init
 var Discord = require("discord.js");
-var client = new Discord.Client();
 var Command = require("./commands.js");
-var Config = Command.Config;
+var Config = require("./config.js");
+
+var client = new Discord.Client();
 
 client.on('ready', () => {
   	console.log("Ready!");
@@ -41,7 +42,7 @@ client.on('message', (msg) => {
 });
 
 // Command received
-function onCommand(command, params, member, msg) { 
+function onCommand(command, params, msg) { 
 	// We want to delete valid commands, let's assume the command is valid for now
 	var validCommand = true; 
 	var paramCount;
@@ -53,21 +54,21 @@ function onCommand(command, params, member, msg) {
 	{ 
 		case "role":
 			if (paramCount == 1)
-				Command.Role(params[0], member);
+				Command.Role(params[0], msg.member);
 		break;
 
 		case "help":
-			Command.Help(member);
+			Command.Help(msg.member);
 		break;
 
 		case "captaineer": // !captains alias !role captains
 			if (paramCount == 0)
-				onCommand('role', Array('captaineer'), member);
+				onCommand('role', Array('captaineer'), msg.member);
 		break;
 
 		case "rule":
 			if (paramCount == 1 || (paramCount == 2 && msg.mentions.users.array().length > 0))
-				Command.Rule(member, params[0], params[1], msg.channel);
+				Command.Rule(msg.member, params[0], params[1], msg.channel);
 		break;
 
 		default:

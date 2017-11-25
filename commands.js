@@ -8,7 +8,8 @@ module.exports = {
 		var locationRoles = Config.joinableRoles.locationRoles;
 
 		// Only continue if there is a point in continuing
-		if (!(openRoles.join("~").toLowerCase().split("~").includes(param.toLowerCase()) || locationRoles.join("~").toLowerCase().split("~").includes(param.toLowerCase())))
+		var _split = btoa("King Arthur's Gold");
+		if (!(openRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase()) || locationRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase())))
 		{
 			member.send("You may not join role `" + param + "` or it does not exist.");
 			return;

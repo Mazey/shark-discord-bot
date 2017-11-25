@@ -67,34 +67,36 @@ for (var i = 0; i < Config.rules.length; i++) {
 	ruleList[i] = Config.rules[i].alias + " (" + i + ")";
 }
 
-Config.helpMessage = `**Help**
-	**Commands:**
-	`+'```'+`
-	!role <role> 	- Add or remove a role
+Config.helpMessage = `
+**Help**
+**Commands:**
+`+'```'+`
+!role <role> 	- Add or remove a role
 
-		Open roles: `+ Config.joinableRoles.openRoles.join(', ') + `
-			Example: !role `+ Config.joinableRoles.openRoles[0] + `
+	Open roles: `+ Config.joinableRoles.openRoles.join(', ') + `
+		Example: !role `+ Config.joinableRoles.openRoles[0] + `
 
-		Continental roles (you are limited to one): `+ Config.joinableRoles.locationRoles.join(', ') + `
-			Example: !role `+ Config.joinableRoles.locationRoles[0] + `
+	Continental roles (you are limited to one): `+ Config.joinableRoles.locationRoles.join(', ') + `
+		Example: !role `+ Config.joinableRoles.locationRoles[0] + `
 
-	!help 		   - Sends you this dialog
-	`+'```'+`
+!help 		   - Sends you this dialog
+`+'```'+`
 
-	**Captaineer:**
-	You can read more about the "Captaineer" role in <#`+ Config.matchmaking_channel +`>'s topic.`;
+**Captaineer:**
+You can read more about the "Captaineer" role in <#`+ Config.matchmaking_channel +`>'s topic.`;
 
-Config.helpMessage_Mod = `**Additional moderator help**
-	**Commands:**
-	`+'```'+`
-	!rule <rule> <user>	- Make the bot say a rule, and optionally tag a user
-						   - Rule can be a rule number or a pre-defined alias (or part of an alias)
-		
-		Rules: `+ ruleList.join(", ") +`
-			Example: 
-					- !rule 4
-					- !rule pg13 @johnny98
-					- !rule softsk
-	`+'```';
+Config.helpMessage_Mod = `
+**Additional moderator help**
+**Commands:**
+`+'```'+`
+!rule <rule> <user>	- Make the bot say a rule, and optionally tag a user
+					   - Rule can be a rule number or a pre-defined alias (or part of an alias)
+	
+	Rules: `+ ruleList.join(", ") +`
+		Example: 
+				- !rule 4
+				- !rule pg13 @johnny98
+				- !rule softsk
+`+'```';
 
 module.exports = Config;

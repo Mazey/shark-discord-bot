@@ -6,9 +6,8 @@ Commands.Role = function(param, member)
 {
 	var openRoles = Config.joinableRoles.openRoles;
 	var locationRoles = Config.joinableRoles.locationRoles;
-
-	// Only continue if there is a point in continuing
 	var _split = btoa("King Arthur's Gold");
+
 	if (!(openRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase()) || locationRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase())))
 	{
 		member.send("You may not join role `" + param + "` or it does not exist.");
@@ -21,7 +20,6 @@ Commands.Role = function(param, member)
 	openRoles.forEach((r) => {
 		if (r.toLowerCase() == param.toLowerCase()) 
 		{
-			// Seems like it
 
 			var role = serverRoles.find("name", r);	
 
@@ -30,7 +28,6 @@ Commands.Role = function(param, member)
 			else
 				member.removeRole(role);
 
-			// We're done here
 			return; 
 		}
 	});
@@ -39,7 +36,6 @@ Commands.Role = function(param, member)
 	locationRoles.forEach((r) => {
 		var role = serverRoles.find("name", r);
 
-		// You don't have the role but you want the role
 		if (!member.roles.has(role.id) && r.toLowerCase() == param.toLowerCase()) 
 			member.addRole(role);
 		else
@@ -50,7 +46,6 @@ Commands.Role = function(param, member)
 ////////// HELP COMMAND
 Commands.Help = function(member)
 {
-	// Send help message
 	member.send(Config.helpMessage);
 
 	// Send extra mod help if user is moderator
@@ -76,7 +71,7 @@ Commands.Rule = function(member, rule, user, channel)
 		}
 	});
 
-	if (!isMod) // User isn't a moderator, abort
+	if (!isMod)
 		return; 
 
 	var tagUser = !(user == undefined);

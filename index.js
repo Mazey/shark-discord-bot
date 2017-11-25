@@ -15,46 +15,35 @@ client.on('guildMemberAdd', (member) => {
   channel.send("Welcome <@" + member.id + ">! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">");
 });
 
-// Message
 client.on('message', (msg) => {
-	// Do we spot a command? and are we in our server
 	if (msg.content[0] == Config.prefix && msg.guild) 
 	{
 		var s = msg.content.split(" ");
-
-		// Get the command without the prefix
 		var command = s[0].substring(1,s[0].length); 
-
-		// Checking for parameters
 		var params = new Array(); 
 		if (s.length > 1)
 		{
-			// Start at 1 so we skip the command name
 		  	for (var i = 1; i < s.length; i++) { 
 		  		params[i-1] = s[i]; 
 		  	}
 		}
-		
-		// Send out the command
+
 		var deleteMessage = onCommand(command, params, msg.member, msg); 
 
 		if (deleteMessage)
 		{
-			// If the command is a valid command, let's remove it to keep the chat clean
-			msg.delete();
+			msg.delete(); // If the command is a valid command, let's remove it to keep the chat clean
 		}
 	}
 });
 
 // Command received
 function onCommand(command, params, msg) { 
-	// We want to delete valid commands, let's assume the command is valid for now
-	var validCommand = true; 
+	var validCommand = true; // We only want to delete valid commands, let's assume the command is valid for now
 	var paramCount;
 	if (params != undefined)
 		paramCount = params.length;
  
- 	// Check if command is valid
 	switch (command)
 	{ 
 		case "role":
@@ -77,10 +66,7 @@ function onCommand(command, params, msg) {
 		break;
 
 		default:
-			// The command is not valid
 			validCommand = false; 
-
-			// console.log("Unknown command " + command);
 		break;
 	}
 

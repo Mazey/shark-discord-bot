@@ -10,6 +10,11 @@ client.on('ready', () => {
   	client.user.setGame('with fishies');
 });
 
+client.on('guildMemberAdd', (member) => {
+  var channel = client.channels.get(Config.lobby_channel);
+  channel.send("Welcome <@" + member.id + ">! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">");
+});
+
 // Message
 client.on('message', (msg) => {
 	// Do we spot a command? and are we in our server

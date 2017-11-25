@@ -4,11 +4,11 @@ var Config = require("./config.js");
 ////////// ROLE COMMAND
 Commands.Role = function(param, member) 
 {
-	if (member == undefined) return;
+	if (!member) return;
 
 	var openRoles = Config.joinableRoles.openRoles;
 	var locationRoles = Config.joinableRoles.locationRoles;
-	var _split = ("S2luZyBBcnRodXIncyBHb2xk");
+	var _split = "~~~";
 
 	if (!(openRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase()) || locationRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase())))
 	{

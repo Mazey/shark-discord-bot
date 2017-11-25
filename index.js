@@ -56,7 +56,7 @@ function onCommand(command, params, msg) {
 
 		case "captaineer": // !captains alias !role captains
 			if (paramCount == 0)
-				onCommand('role', Array('captaineer'), msg.member);
+				Command.Role("captaineer", msg.member);
 		break;
 
 		case "rule":

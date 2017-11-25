@@ -4,9 +4,11 @@ var Config = require("./config.js");
 ////////// ROLE COMMAND
 Commands.Role = function(param, member) 
 {
+	if (member == undefined) return;
+
 	var openRoles = Config.joinableRoles.openRoles;
 	var locationRoles = Config.joinableRoles.locationRoles;
-	var _split = ("King Arthur's Gold").toString('base64');
+	var _split = ("S2luZyBBcnRodXIncyBHb2xk");
 
 	if (!(openRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase()) || locationRoles.join(_split).toLowerCase().split(_split).includes(param.toLowerCase())))
 	{
@@ -20,7 +22,6 @@ Commands.Role = function(param, member)
 	openRoles.forEach((r) => {
 		if (r.toLowerCase() == param.toLowerCase()) 
 		{
-
 			var role = serverRoles.find("name", r);	
 
 			if (!member.roles.has(role.id))

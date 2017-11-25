@@ -85,7 +85,7 @@ Commands.Rule = function(member, rule, user, channel)
 	else // Maybe the callee supplied an alias then?
 	{
 		for (var i = 0; i < Config.rules.length; i++) {
-			if (Config.rules[i].alias.toLowerCase().startsWidth(rule.toLowerCase()))
+			if (Config.rules[i].alias.toLowerCase().startsWith(rule.toLowerCase()))
 				_rule = Config.rules[i].rule;
 		}
 		if (_rule == undefined)

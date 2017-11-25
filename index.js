@@ -1,4 +1,3 @@
-// Init
 var Discord = require("discord.js");
 var Command = require("./commands.js");
 var Config = require("./config.js");

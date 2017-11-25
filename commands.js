@@ -1,5 +1,5 @@
 var Commands = {};
-var Config = require("./config.js"),
+var Config = require("./config.js");
 
 ////////// ROLE COMMAND
 Commands.Role = function(param, member) 

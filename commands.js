@@ -41,7 +41,7 @@ Commands.Role = function(param, member)
 		else
 			member.removeRole(role);
 	});
-},
+};
 
 ////////// HELP COMMAND
 Commands.Help = function(member)
@@ -56,7 +56,7 @@ Commands.Help = function(member)
 			member.send(Config.helpMessage_Mod);
 		}
 	});
-},
+};
 
 ////////// RULE COMMAND
 Commands.Rule = function(member, rule, user, channel)
@@ -96,10 +96,6 @@ Commands.Rule = function(member, rule, user, channel)
 	}
 
 	channel.send((tagUser ? user + ": " : "" ) + _rule);
-}
-
-Commands.Welcome = function() {
-	
-}
+};
 
 module.exports = Commands;

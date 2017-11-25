@@ -12,7 +12,7 @@ client.on('ready', () => {
 
 client.on('guildMemberAdd', (member) => {
   var channel = client.channels.get(Config.lobby_channel);
-  channel.send("Welcome <@" + member.id + ">! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">");
+  channel.send("Welcome <@" + member.id + ">! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">.");
 });
 
 client.on('message', (msg) => {

@@ -1,8 +1,10 @@
 var Discord = require("discord.js");
+var client = new Discord.Client();
+
 var Command = require("./commands.js");
 var Config = require("./config.js");
 
-var client = new Discord.Client();
+var Stargame = require("./modules/stargame.js")(client);
 
 client.on('ready', () => {
   	console.log("Ready!");

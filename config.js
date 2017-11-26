@@ -13,6 +13,7 @@ Config.joinableRoles = {
 
 // channel IDs
 Config.lobby_channel 		= ""; // #general id
+Config.offtopic_channel		= ""; // #offtopic id
 Config.rules_channel 		= ""; // #rules id
 Config.matchmaking_channel 	= ""; // #matchmaking id
 Config.information_channel 	= ""; // #information id

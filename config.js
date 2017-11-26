@@ -1,7 +1,7 @@
 var Config = {};
 
 // Config
-Config.key 				= "";	 // bot token
+Config.key 			= "";	 // bot token
 Config.prefix 			= "!";	 // command prefix
 Config.modroles 		= [];	 // String[]
 Config.abuser_role 		= "";	 // String
@@ -35,7 +35,7 @@ for (var i = 0; i < Config.rules.length; i++) {
 
 
 // Help messages
-Config.helpMessage 			= ""; // help message
+Config.helpMessage 		= ""; // help message
 Config.helpMessage_Mod 		= ""; // mod help message
 
 module.exports = Config;

@@ -100,7 +100,7 @@ Commands.Freeze = function(member, user)
 	if (!user.roles.has(role.id))
 	{
 		user.addRole(role);
-		channel.send(user.toString() + " you have been frozen by " + member.toString() + " for abusive behavior. It will dealt with here.");
+		channel.send(user.toString() + " you have been frozen by " + member.toString() + " for abusive behavior. It will be dealt with here.");
 	}
 	else
 	{

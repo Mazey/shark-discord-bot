@@ -6,7 +6,6 @@ var Config = require("./config.js");
 
 
 client.on('ready', () => {
-  	console.log("Ready!");
   	client.user.setGame('with fishies');
 
 	Stargame = require("./modules/stargame.js")(client);

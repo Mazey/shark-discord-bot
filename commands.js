@@ -94,7 +94,7 @@ Commands.Freeze = function(member, user)
 {
 	if (!isMod(member)) return;
 
-	var channel = client.channels.get(Config.abuser_channel);
+	var channel = member.guild.channels.get(Config.abuser_channel);
 	var role = member.guild.roles.find("name", Config.abuser_role);
 
 	if (!user.roles.has(role.id))

@@ -111,7 +111,6 @@ Commands.Freeze = function(member, user)
 }
 
 function isMod(member) {
-
 	Config.modroles.forEach((modrole) => {
 		var modRole = member.guild.roles.find("name", modrole);
 		if (member.roles.has(modRole.id))
@@ -119,8 +118,6 @@ function isMod(member) {
 			return true;
 		}
 	});
-
-	return false;
 }
 
 module.exports = Commands;

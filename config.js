@@ -10,10 +10,12 @@ Config.joinableRoles = {
 	locationRoles : ["EU", "OC", "NA", "SA", "AN", "AF", "AS"]
 };
 
+// channel IDs
 Config.matchmaking_channel 	= "339006421721153537"; // #matchmaking
 Config.lobby_channel 		= "337250580303052801"; // #general
 Config.rules_channel 		= "361184531186712576"; // #rules
 Config.information_channel 	= "337250654856675330"; // #information
+Config.abuser_channel		= "383301626481475594"; // #frozen
 
 Config.rules = [
 	{

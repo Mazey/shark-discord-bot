@@ -26,15 +26,6 @@ Config.rules = [ // Object[{String alias, String rule}]
 	}
 ];
 
-// DO NOT EDIT -----
-var ruleList = [];
-
-for (var i = 0; i < Config.rules.length; i++) {
-	ruleList[i] = Config.rules[i].alias + " (" + i + ")";
-}
-// ----- DO NOT EDIT 
-
-
 // Help messages
 Config.helpMessage 		= ""; // help message
 Config.helpMessage_Mod 		= ""; // mod help message

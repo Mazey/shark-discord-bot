@@ -4,11 +4,12 @@ var client = new Discord.Client();
 var Command = require("./commands.js");
 var Config = require("./config.js");
 
-var Stargame = require("./modules/stargame.js")(client);
 
 client.on('ready', () => {
   	console.log("Ready!");
   	client.user.setGame('with fishies');
+
+	Stargame = require("./modules/stargame.js")(client);
 });
 
 client.on('guildMemberAdd', (member) => {

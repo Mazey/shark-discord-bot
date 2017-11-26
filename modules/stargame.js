@@ -28,7 +28,7 @@ module.exports = function(client) {
 
 					data[0].stars++;
 
-					channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[0].stars);
+					channel.send(msg.member.toString() + " takes the cake! They have just earned their first star");
 
 					fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
 						if (err) throw err;

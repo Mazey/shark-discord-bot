@@ -90,6 +90,26 @@ Commands.Rule = function(member, rule, user, channel)
 	channel.send((tagUser ? user + ": " : "" ) + _rule);
 };
 
+Commands.Freeze = function(member, user)
+{
+	if (!isMod()) return;
+
+	var channel = client.channels.get(Config.abuser_channel);
+	var role = member.guild.roles.find("name", Config.abuser_role);
+
+	if (!user.roles.has(role.id))
+	{
+		user.addRole(role);
+		channel.send(user.toString() + " you have been frozen by " + member.toString() + " for abusive behavior. It will dealt with here.");
+	}
+	else
+	{
+		user.removeRole(role);
+		channel.send(user.toString() + " has been unfrozen by " + member.toString());
+	}
+
+}
+
 function isMod(member) {
 
 	Config.modroles.forEach((modrole) => {

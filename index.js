@@ -11,7 +11,7 @@ client.on('ready', () => {
 
 client.on('guildMemberAdd', (member) => {
   var channel = client.channels.get(Config.lobby_channel);
-  channel.send("Welcome <@" + member.id + ">! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">.");
+  channel.send("Welcome " + member.toString() + "! Don't forget to read the <#" + Config.rules_channel + "> and check out <#" + Config.information_channel + ">.");
 });
 
 client.on('message', (msg) => {
@@ -60,7 +60,7 @@ function onCommand(command, params, msg) {
 		break;
 
 		case "rule":
-			if (paramCount == 1 || (paramCount == 2 && msg.mentions.users.array().length > 0))
+			if (paramCount == 1 || (paramCount == 2 && msg.mentions.members.size > 0))
 				Command.Rule(msg.member, params[0], params[1], msg.channel);
 		break;
 

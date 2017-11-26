@@ -96,6 +96,10 @@ Config.helpMessage_Mod = `
 				- !rule 4
 				- !rule pg13 @johnny98
 				- !rule softsk
+
+!freeze <user>		- Give a user the Frozen role, removing their ability to chat. They will be locked inside the #frozen channel. Using this command on a frozen user will unfreeze them.
+	Example:
+			- !freeze @johnny98
 `+'```';
 
 module.exports = Config;

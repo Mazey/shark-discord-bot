@@ -68,7 +68,7 @@ function onCommand(command, params, msg) {
 			var mentions = msg.mentions.members;
 			if (paramCount == 1 && mentions.size > 0)
 			{
-				Command.Freeze(member, mentions.first());
+				Command.Freeze(msg.member, mentions.first());
 			}
 		break;
 

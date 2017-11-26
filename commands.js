@@ -63,7 +63,7 @@ Commands.Help = function(member)
 ////////// RULE COMMAND
 Commands.Rule = function(member, rule, user, channel)
 {
-	if (!isMod())
+	if (!isMod(member))
 		return; 
 
 	var tagUser = !(user == undefined);
@@ -92,7 +92,7 @@ Commands.Rule = function(member, rule, user, channel)
 
 Commands.Freeze = function(member, user)
 {
-	if (!isMod()) return;
+	if (!isMod(member)) return;
 
 	var channel = client.channels.get(Config.abuser_channel);
 	var role = member.guild.roles.find("name", Config.abuser_role);

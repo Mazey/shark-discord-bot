@@ -3,6 +3,7 @@ var Config = {};
 Config.key = "";
 Config.prefix = "!";
 Config.modroles = ["Moderator", "Administrator"];
+Config.abuser_role = "Frozen";
 
 Config.joinableRoles = {
 	openRoles : ["Captaineer"],

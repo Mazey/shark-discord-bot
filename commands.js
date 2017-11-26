@@ -63,17 +63,7 @@ Commands.Help = function(member)
 ////////// RULE COMMAND
 Commands.Rule = function(member, rule, user, channel)
 {
-	var isMod = false;
-
-	Config.modroles.forEach((modrole) => {
-		var modRole = member.guild.roles.find("name", modrole);
-		if (member.roles.has(modRole.id))
-		{
-			isMod = true;
-		}
-	});
-
-	if (!isMod)
+	if (!isMod())
 		return; 
 
 	var tagUser = !(user == undefined);
@@ -99,5 +89,18 @@ Commands.Rule = function(member, rule, user, channel)
 
 	channel.send((tagUser ? user + ": " : "" ) + _rule);
 };
+
+function isMod(member) {
+
+	Config.modroles.forEach((modrole) => {
+		var modRole = member.guild.roles.find("name", modrole);
+		if (member.roles.has(modRole.id))
+		{
+			return true;
+		}
+	});
+
+	return false;
+}
 
 module.exports = Commands;

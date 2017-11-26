@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 module.exports = function(client) {
 	var Config = require("./../config.js");
 	var dropped = false;
@@ -16,8 +18,61 @@ module.exports = function(client) {
 
 	client.on('message', (msg) => {
 		if (dropped && msg.channel == channel && msg.content == Config.prefix + "grab star") {
+
+			fs.exists('data.json', function(exists) {
+				if (!exists) {
+					var data = [{
+						userid : msg.member.id,
+						stars : 0
+					}];
+
+					data[0].stars++;
+
+					channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[0].stars);
+
+					fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
+						if (err) throw err;
+					});
+				}
+				else {
+					fs.readFile('data.json', 'utf8', function readFileCallback(err, data) {
+						if (err) throw err;
+						else {
+							data = JSON.parse(data);
+
+							var winner;
+
+							for (var i = 0; i < data.length; i++) {
+								if (data[i].userid == msg.member.id) {
+									winner = i;
+									break;
+								}
+							}
+								console.log("one : " + winner)
+							if (winner == undefined) {
+								winner = data.length;
+								data[winner] = {
+									userid : msg.member.id,
+									stars : 0
+								}
+							}
+								console.log("two : " + winner)
+
+							data[winner].stars++;
+
+								console.log(data[winner]);
+
+							fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
+								if (err) throw err;
+							});
+
+							channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[winner].stars);
+						}
+					});
+				}
+			});
+
 			dropped = false;
-			channel.send(msg.member.toString() + " takes the cake! Their total star count is 123.");
 		}
 	});
 

@@ -28,7 +28,7 @@ module.exports = function(client) {
 
 					data[0].stars++;
 
-					channel.send(msg.member.toString() + " takes the cake! They have just earned their first star");
+					channel.send(msg.member.toString() + " takes the cake! They have just earned their first star.");
 
 					fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
 						if (err) throw err;
@@ -48,7 +48,7 @@ module.exports = function(client) {
 									break;
 								}
 							}
-								console.log("one : " + winner)
+
 							if (winner == undefined) {
 								winner = data.length;
 								data[winner] = {
@@ -56,17 +56,14 @@ module.exports = function(client) {
 									stars : 0
 								}
 							}
-								console.log("two : " + winner)
 
 							data[winner].stars++;
-
-								console.log(data[winner]);
 
 							fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
 								if (err) throw err;
 							});
 
-							channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[winner].stars);
+							channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[winner].stars + ".");
 						}
 					});
 				}
@@ -77,4 +74,5 @@ module.exports = function(client) {
 	});
 
 	client.setInterval(dropStar, (Math.random() * (40 - 20) + 20) * 60 * 1000); // drop star every 20-40 minutes
+	dropStar();
 }

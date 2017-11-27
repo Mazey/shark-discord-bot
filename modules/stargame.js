@@ -18,7 +18,16 @@ module.exports = function(client) {
 
 	client.on('message', (msg) => {
 		if (dropped && msg.channel == channel && msg.content == Config.prefix + "grab star") {
-
+			var abuser = false;
+			Config.abusers.forEach((userid) => {
+				if (msg.member.id == userid)
+					abuser = true;
+			});
+			if (abuser) {
+				msg.delete();
+				console.log("Denied " + msg.member.id + " a star because they are on the abuser list");
+				return;
+			}
 			fs.exists('data.json', function(exists) {
 				if (!exists) {
 					var data = [{

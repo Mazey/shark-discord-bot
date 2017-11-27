@@ -3,12 +3,12 @@ var Config = {};
 // Config
 Config.key 			= "";	 // bot token
 Config.prefix 			= "!";	 // command prefix
-Config.modroles 		= [];	 // String[]
-Config.abuser_role 		= "";	 // String
+Config.modroles 		= [];	 // String[] name
+Config.abuser_role 		= "";	 // String name
 
 Config.joinableRoles = {
-	openRoles : [], // String[]
-	locationRoles : [] // String[]
+	openRoles : [], // String[] name
+	locationRoles : [] // String[] name
 };
 
 // channel IDs
@@ -18,6 +18,8 @@ Config.rules_channel 		= ""; // #rules id
 Config.matchmaking_channel 	= ""; // #matchmaking id
 Config.information_channel 	= ""; // #information id
 Config.abuser_channel		= ""; // #frozen id
+
+Config.abusers 			= [] // String[] id
 
 Config.rules = [ // Object[{String alias, String rule}]
 	{

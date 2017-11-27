@@ -63,9 +63,6 @@ Commands.Help = function(member)
 ////////// RULE COMMAND
 Commands.Rule = function(member, rule, user, channel)
 {
-	if (!isMod(member))
-		return; 
-
 	var tagUser = !(user == undefined);
 
 	var _rule;
@@ -92,8 +89,6 @@ Commands.Rule = function(member, rule, user, channel)
 
 Commands.Freeze = function(member, user)
 {
-	if (!isMod(member)) return;
-
 	var channel = member.guild.channels.get(Config.abuser_channel);
 	var role = member.guild.roles.find("name", Config.abuser_role);
 
@@ -108,19 +103,6 @@ Commands.Freeze = function(member, user)
 		channel.send(user.toString() + " has been unfrozen by " + member.toString());
 	}
 
-}
-
-function isMod(member) {
-	var mod = false;
-	Config.modroles.forEach((modrole) => {
-		var modRole = member.guild.roles.find("name", modrole);
-		if (member.roles.has(modRole.id))
-		{
-			mod = true;;
-		}
-	});
-
-	return mod;
 }
 
 module.exports = Commands;

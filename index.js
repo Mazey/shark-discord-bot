@@ -50,6 +50,8 @@ function onCommand(command, params, msg) {
 		case "role":
 			if (paramCount == 1)
 				Command.Role(params[0], msg.member);
+			else
+				validCommand = false;
 		break;
 
 		case "help":
@@ -59,19 +61,23 @@ function onCommand(command, params, msg) {
 		case "captaineer": // !captains alias !role captains
 			if (paramCount == 0)
 				Command.Role("captaineer", msg.member);
+			else
+				validCommand = false;
 		break;
 
 		case "rule":
-			if (paramCount == 1 || (paramCount == 2 && msg.mentions.members.size > 0))
+			if (isMod(msg.member) && (paramCount == 1 || (paramCount == 2 && msg.mentions.members.size > 0)))
 				Command.Rule(msg.member, params[0], params[1], msg.channel);
+			else
+				validCommand = false;
 		break;
 
 		case "freeze":
 			var mentions = msg.mentions.members;
-			if (paramCount == 1 && mentions.size > 0)
-			{
+			if (isMod(msg.member) && paramCount == 1 && mentions.size > 0)
 				Command.Freeze(msg.member, mentions.first());
-			}
+			else
+				validCommand = false;
 		break;
 
 		default:
@@ -80,6 +86,19 @@ function onCommand(command, params, msg) {
 	}
 
 	return validCommand
+}
+
+function isMod(member) {
+	var mod = false;
+	Config.modroles.forEach((modrole) => {
+		var modRole = member.guild.roles.find("name", modrole);
+		if (member.roles.has(modRole.id))
+		{
+			mod = true;;
+		}
+	});
+
+	return mod;
 }
 
 client.login(Config.key);

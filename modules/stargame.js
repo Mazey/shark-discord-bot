@@ -9,7 +9,7 @@ module.exports = function(client) {
 		channel.fetchMessage(channel.lastMessageID).then((_msg) => {
 			if (Date.now() - _msg.createdAt < 120 * 1000 && !dropped) { // only drop star if there is no star dropped already and #off_topic has had activity the past 2 minutes
 				dropped = true;
-				channel.send("A " + client.emojis.get("352467105419100161").toString() + " has dropped. Grab it up, quickly! Write !grab star");
+				channel.send("A " + client.emojis.get("352467105419100161").toString() + " has dropped. Grab it, quickly! Write !grab star");
 			}
 
 		});

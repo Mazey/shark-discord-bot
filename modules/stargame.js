@@ -17,17 +17,56 @@ module.exports = function(client) {
 
 
 	client.on('message', (msg) => {
-		if (dropped && msg.channel == channel && msg.content == Config.prefix + "grab star") {
+		if (!msg.channel == channel) return;
+		if (msg.content == Config.prefix + "star leaderboard") {
 			var abuser = false;
 			Config.abusers.forEach((userid) => {
 				if (msg.member.id == userid)
 					abuser = true;
 			});
+
 			if (abuser) {
 				msg.delete();
-				console.log("Denied " + msg.member.id + " a star because they are on the abuser list");
+				console.log("Denied " + msg.member.id + " the leaderboard command because they are in the abuser list.");
 				return;
 			}
+
+			fs.exists('data.json', function(exists) {
+				if (!exists) return;
+				fs.readFile('data.json', 'utf8', function readFileCallback(err, data) {
+					if (err) throw err;
+					else {
+						var top10 = JSON.parse(data).sort(function(a, b) {
+						    return parseFloat(b.stars) - parseFloat(a.stars);
+						}).slice(0,10);
+
+						var top10_string = "";
+
+						for (var i = 0; i < top10.length; i++) {
+							top10_string += client.users.get(top10[i].userid).username + ": " + top10[i].stars + "\n";
+						}
+						var emoji = client.emojis.get("352467105419100161").toString();
+						channel.send(emoji + "```" + top10_string + "```" + emoji);
+					}
+				});
+			});
+
+			return;
+		}
+
+		if (dropped && msg.content == Config.prefix + "grab star") {
+			var abuser = false;
+			Config.abusers.forEach((userid) => {
+				if (msg.member.id == userid)
+					abuser = true;
+			});
+
+			if (abuser) {
+				msg.delete();
+				console.log("Denied " + msg.member.id + " a star because they are on the abuser list.");
+				return;
+			}
+
 			fs.exists('data.json', function(exists) {
 				if (!exists) {
 					var data = [{
@@ -83,5 +122,4 @@ module.exports = function(client) {
 	});
 
 	client.setInterval(dropStar, (Math.random() * (40 - 20) + 20) * 60 * 1000); // drop star every 20-40 minutes
-	dropStar();
 }

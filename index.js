@@ -3,6 +3,7 @@ var client = new Discord.Client();
 
 var Command = require("./commands.js");
 var Config = require("./config.js");
+var Stargame;
 
 
 client.on('ready', () => {
@@ -17,6 +18,9 @@ client.on('guildMemberAdd', (member) => {
 });
 
 client.on('message', (msg) => {
+	// modules
+	Stargame.onMessage(msg);
+
 	if (msg.content[0] == Config.prefix && msg.guild) 
 	{
 		var s = msg.content.split(" ");

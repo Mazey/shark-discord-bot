@@ -2,21 +2,25 @@ var fs = require('fs');
 
 module.exports = function(client) {
 	var Config = require("./../config.js");
+	var module = {}
 	var dropped = false;
 	var channel = client.channels.get(Config.offtopic_channel);
+	var grab_commands = [Config.prefix + "grab star", Config.prefix + "take star", Config.prefix + "grab", Config.prefix + "star", "that's my star", "I grab star"];
+	var current_command;
 
 	function dropStar() {
 		channel.fetchMessage(channel.lastMessageID).then((_msg) => {
 			if (Date.now() - _msg.createdAt < 120 * 1000 && !dropped) { // only drop star if there is no star dropped already and #off_topic has had activity the past 2 minutes
 				dropped = true;
-				channel.send("A " + client.emojis.get("352467105419100161").toString() + " has dropped. Grab it, quickly! Write !grab star");
+				current_command = grab_commands[Math.floor(Math.random() * grab_commands.length)];
+				channel.send("A " + client.emojis.get("352467105419100161").toString() + ' has dropped. Grab it, quickly! Say "' + current_command + '".');
 			}
 
 		});
 	}
 
 
-	client.on('message', (msg) => {
+	module.onMessage = function(msg) {
 		if (!msg.channel == channel) return;
 		if (msg.content == Config.prefix + "star leaderboard") {
 			var abuser = false;
@@ -42,11 +46,21 @@ module.exports = function(client) {
 
 						var top10_string = "";
 
-						for (var i = 0; i < top10.length; i++) {
-							top10_string += client.users.get(top10[i].userid).username + ": " + top10[i].stars + "\n";
+						for (var i = 1; i < top10.length; i++) {
+							top10_string += client.users.get(top10[i].userid).username + ": " + top10[i].stars + " star" + (top10[i].stars > 1 ? "s" : "") + "\n";
 						}
+
 						var emoji = client.emojis.get("352467105419100161").toString();
-						channel.send(emoji + "```" + top10_string + "```" + emoji);
+						var top1 = client.users.get(top10[0].userid);
+						var embed = {
+							"title" : (emoji + " " + top1.username + ": " + top10[0].stars + " stars! " + emoji),
+							"description" : top10_string,
+						    "thumbnail": {
+						      "url": top1.avatarURL
+						    }
+						}
+
+						channel.send({embed});
 					}
 				});
 			});
@@ -54,7 +68,7 @@ module.exports = function(client) {
 			return;
 		}
 
-		if (dropped && msg.content == Config.prefix + "grab star") {
+		if (dropped && msg.content == current_command) {
 			var abuser = false;
 			Config.abusers.forEach((userid) => {
 				if (msg.member.id == userid)
@@ -119,7 +133,9 @@ module.exports = function(client) {
 
 			dropped = false;
 		}
-	});
+	};
 
 	client.setInterval(dropStar, (Math.random() * (40 - 20) + 20) * 60 * 1000); // drop star every 20-40 minutes
+
+	return module;
 }

@@ -179,7 +179,5 @@ module.exports = function(client) {
 
 	dropTimer(false);
 
-	dropStar();
-
 	return module;
 }

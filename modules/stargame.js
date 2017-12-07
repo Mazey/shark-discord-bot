@@ -5,6 +5,7 @@ module.exports = function(client) {
 	var module 	= {};
 	var channel = client.channels.get(Config.offtopic_channel);
 	var emoji 	= client.emojis.get("352467105419100161").toString();
+	var emoji 	= client.emojis.get("383693705909108737").toString();
 
 	var _pfx 					= Config.prefix;
 	var dropCommandsPositive 	= [_pfx + "grab", _pfx + "grab star", "that's my star", "I grab star"];
@@ -47,12 +48,12 @@ module.exports = function(client) {
 			else {
 				activeChat = false;
 			}
-		}
+		});
 	}
 
 	function dropTimer(shorttimer) {
-		var _minutes = shortimer ? (20 - 5) + 5 : (45 - 15) + 15;
-		client.setTimeout(dropStar, (Math.random() * _minutes * 60 * 1000);
+		var _minutes = shorttimer ? (20 - 5) + 5 : (45 - 15) + 15;
+		client.setTimeout(dropStar, (Math.random() * _minutes * 60 * 1000));
 	}
 
 	function readData(callback) {
@@ -90,13 +91,13 @@ module.exports = function(client) {
 		});
 	}
 
-	function giveStar(userid) {
+	function giveStar(member) {
 		readData(function (err, data) {
 			var data = JSON.parse(data);
 			var winner;
 
 			for (var i = 0; i < data.length; i++) {
-				if (data[i].userid == msg.member.id) {
+				if (data[i].userid == member.id) {
 					winner = i;
 					break;
 				}
@@ -105,7 +106,7 @@ module.exports = function(client) {
 			if (winner == undefined) {
 				winner = data.length;
 				data[winner] = {
-					userid : msg.member.id,
+					userid : member.id,
 					stars : 0
 				}
 			}
@@ -117,13 +118,10 @@ module.exports = function(client) {
 					if (err) throw err;
 				});
 
-				channel.send(msg.member.toString() + " takes the cake! Their total star count is " + data[winner].stars + ".");
+				channel.send(member.toString() + " takes the cake! Their total star count is " + data[winner].stars + ".");
 			}
 			else {
 				if (data[winner].stars > 0) {
-					return;
-				}
-				else {
 					data[winner].stars--;
 					data[0].stars++;
 
@@ -131,7 +129,7 @@ module.exports = function(client) {
 						if (err) throw err;
 					});
 
-					channel.send(msg.member.toString() + " has given me one of their stars, how kind! My total star count is " + data[0].stars + ".");
+					channel.send(member.toString() + " has given me one of their stars, how kind! My total star count is " + data[0].stars + ".");
 				}
 			}
 
@@ -161,7 +159,7 @@ module.exports = function(client) {
 				break;
 			case dropCommandCurrent:
 				if (abuser) msg.delete();
-				else if (dropped) giveStar(msg.member.id);
+				else if (dropped) giveStar(msg.member);
 				break;
 		}
 
@@ -181,6 +179,8 @@ module.exports = function(client) {
 	});
 
 	dropTimer(false);
+
+	dropStar();
 
 	return module;
 }

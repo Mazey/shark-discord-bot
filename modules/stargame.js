@@ -5,7 +5,6 @@ module.exports = function(client) {
 	var module 	= {};
 	var channel = client.channels.get(Config.offtopic_channel);
 	var emoji 	= client.emojis.get("352467105419100161").toString();
-	var emoji 	= client.emojis.get("383693705909108737").toString();
 
 	var _pfx 					= Config.prefix;
 	var dropCommandsPositive 	= [_pfx + "grab", _pfx + "grab star", "that's my star", "I grab star"];

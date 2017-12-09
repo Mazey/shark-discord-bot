@@ -19,9 +19,8 @@ module.exports = function(client) {
 	function dropStar() {
 		channel.fetchMessage(channel.lastMessageID).then((lastmsg) => {
 			var secondsAgo = (Date.now() - lastmsg.createdAt)/1000;
-
-			if (secondsAgo < 45) {
-				fakeDrop = Math.random() * 100 > 85;
+			if (secondsAgo < 60) {
+				fakeDrop = true;
 				var _commands = dropCommands.concat((fakeDrop ? dropCommandsNegative : dropCommandsPositive));
 				dropCommandCurrent = _commands[Math.floor(Math.random() * _commands.length)];
 
@@ -51,8 +50,8 @@ module.exports = function(client) {
 	}
 
 	function dropTimer(shorttimer) {
-		var _minutes = shorttimer ? (20 - 5) + 5 : (45 - 15) + 15;
-		client.setTimeout(dropStar, (Math.random() * _minutes * 60 * 1000));
+		var _minutes = shorttimer ? Math.random() * (20 - 5) + 5 : Math.random() * (45 - 15) + 15;
+		client.setTimeout(dropStar, (_minutes * 60 * 1000));
 	}
 
 	function readData(callback) {
@@ -118,23 +117,20 @@ module.exports = function(client) {
 				});
 
 				channel.send(member.toString() + " takes the cake! Their total star count is " + data[winner].stars + ".");
+				dropped = false;
 			}
-			else {
-				if (data[winner].stars > 0) {
-					data[winner].stars--;
-					data[0].stars++;
+			else if (data[winner].stars > 0) {
+				data[winner].stars--;
+				data[0].stars++;
 
-					fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
-						if (err) throw err;
-					});
+				fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
+					if (err) throw err;
+				});
 
-					channel.send(member.toString() + " has given me one of their stars, how kind! My total star count is " + data[0].stars + ".");
-				}
+				channel.send(member.toString() + " has given me one of their stars, how kind! My total star count is " + data[0].stars + ".");
+				dropped = false;
 			}
-
 		});
-
-		dropped = false;
 	}
 
 

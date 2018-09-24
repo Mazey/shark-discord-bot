@@ -2,7 +2,7 @@ var Commands = {};
 var Config = require("./config.js");
 
 ////////// ROLE COMMAND
-Commands.Role = function(param, member) 
+Commands.Role = function(param, member)
 {
 	if (!member) return;
 
@@ -20,16 +20,16 @@ Commands.Role = function(param, member)
 
 	// Is the user requesting an 'open' role?
 	openRoles.forEach((r) => {
-		if (r.toLowerCase() == param.toLowerCase()) 
+		if (r.toLowerCase() == param.toLowerCase())
 		{
-			var role = serverRoles.find("name", r);	
+			var role = serverRoles.find("name", r);
 
 			if (!member.roles.has(role.id))
 				member.addRole(role);
 			else
 				member.removeRole(role);
 
-			return; 
+			return;
 		}
 	});
 
@@ -37,7 +37,7 @@ Commands.Role = function(param, member)
 	locationRoles.forEach((r) => {
 		var role = serverRoles.find("name", r);
 
-		if (!member.roles.has(role.id) && r.toLowerCase() == param.toLowerCase()) 
+		if (!member.roles.has(role.id) && r.toLowerCase() == param.toLowerCase())
 			member.addRole(role);
 		else
 			member.removeRole(role);
@@ -103,6 +103,11 @@ Commands.Freeze = function(member, user)
 		channel.send(user.toString() + " has been unfrozen by " + member.toString());
 	}
 
+}
+
+Commands.Ping = function(channel)
+{
+	channel.send('Pong!');
 }
 
 module.exports = Commands;

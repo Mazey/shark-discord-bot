@@ -18,6 +18,10 @@ Config.rules_channel 		= ""; // #rules id
 Config.matchmaking_channel 	= ""; // #matchmaking id
 Config.information_channel 	= ""; // #information id
 Config.abuser_channel		= ""; // #frozen id
+Config.servers_channel		= ""; // #servers id
+Config.servers_message		= ""; // servers message id
+
+Config.servers_interval		= 10; // Update interval of server in seconds
 
 Config.abusers 			= [] // String[] id
 

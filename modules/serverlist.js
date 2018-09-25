@@ -44,7 +44,7 @@ module.exports = function(client) {
 
 			// Update message and channel
 			message.channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
-			client.user.setPresence({ status: 'online', game: { name: `with ${players} fishies` } });
+			client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
 			message.edit(text).catch(console.error);
 		});
 
@@ -81,8 +81,8 @@ module.exports = function(client) {
 	}
 
 	// Pluralizes the word
-	function plural(val, text, suffix = 's') {
-		return val === 1 ? text : text + suffix;
+	function plural(val, text, suffix = 's', trim = 0) {
+		return val === 1 ? text : text.substring(0, text.length - trim) + suffix;
 	}
 
 	return module;

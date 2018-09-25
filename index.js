@@ -7,6 +7,8 @@ var Stargame;
 
 
 client.on('ready', () => {
+	client.user.setPresence({ status: 'online', game: { name: `with fishies` } });
+
 	Stargame = require("./modules/stargame.js")(client);
 	Serverlist = require("./modules/serverlist.js")(client);
 });

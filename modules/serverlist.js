@@ -17,7 +17,7 @@ module.exports = function(client) {
 
 	function loop() {
 		httpGetAsync('https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]', servers => {
-			if (!servers) return; /// API down?
+			if (!servers) return; // API down?
 
 			// Sort servers and players
 			servers = servers.serverList.sort((a, b) => {
@@ -42,7 +42,7 @@ module.exports = function(client) {
 				return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join('  ')}`;
 			}).join('\n\n') + '\n```';
 
-			// Update message and channel
+			// Update message, channel and presence
 			message.channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
 			client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
 			message.edit(text).catch(console.error);

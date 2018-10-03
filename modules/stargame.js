@@ -1,179 +1,160 @@
-var fs = require('fs');
+const sql = require("sqlite");
+sql.open("./starinfo.sqlite");
 
 module.exports = function(client) {
-	var Config 	= require("./../config.js");
+	const config = require("./stargame.json");
 	var module 	= {};
-	var channel = client.channels.get(Config.offtopic_channel);
-	var emoji 	= client.emojis.get("352467105419100161").toString();
 
-	var _pfx 					= Config.prefix;
-	var dropCommandsPositive 	= [_pfx + "grab", _pfx + "grab star", "that's my star", "I grab star"];
-	var dropCommands 			= [_pfx + "star", _pfx + "take star"];
-	var dropCommandsNegative 	= [_pfx + "give star", _pfx + "give"];
+	var is_dropped 	= false;
+	var emoji 		= client.emojis.get(config.emoji).toString();
+	var channel 	= client.channels.get(config.channel);
 
-	var dropped 			= false;
-	var activeChat 			= true;
-	var dropCommandCurrent;
-	var fakeDrop;
+	var lastMessage;
+	var lastDropMessage;
+
+	var commands = config.commands;
+	var currentCommand;
+
+	function starTimer() {
+		setInterval(() => {dropStar()}, (((config.delay - config.delay_random) + Math.floor(Math.random() * (2 * config.delay_random))) * 1000 * 60)); // 40-60 minutes
+	}
+
+	starTimer();
+
 
 	function dropStar() {
-		channel.fetchMessage(channel.lastMessageID).then((lastmsg) => {
-			var secondsAgo = (Date.now() - lastmsg.createdAt)/1000;
-			if (secondsAgo < 60) {
-				fakeDrop = true;
-				var _commands = dropCommands.concat((fakeDrop ? dropCommandsNegative : dropCommandsPositive));
-				dropCommandCurrent = _commands[Math.floor(Math.random() * _commands.length)];
+		if (lastMessage == undefined) return;
+		var inactiviy_time = (Date.now() - lastMessage.createdAt)/1000; // in seconds
+		if (inactiviy_time > 10) return;
 
-				if (!fakeDrop) {
-					channel.send("A " + emoji + ' has dropped. Grab it, quickly! Say "' + dropCommandCurrent + '".').then((msg) => {
-						setTimeout(function(){
-							if (dropped) { msg.delete(); dropped = false; };
-						},2 * 60 * 1000);
+		is_dropped = true;
+		currentCommand = commands[Math.floor(Math.random()*commands.length)];
+		channel.send(`A ${emoji} has dropped. Grab it, quickly! Say "${currentCommand}".`)
+			.then(function(msg){lastDropMessage = msg;});
+
+		setTimeout(function() { 
+			if (is_dropped) {
+				lastDropMessage.delete();
+				is_dropped = false;
+			}
+		}, config.delete_timer * 1000 * 60); // delete uncaught star after 1 minute
+	}
+
+
+	function awardStar(user, category, amount, donator) {
+		amount = (amount == undefined ? 1 : amount);
+		sql.get(`SELECT * FROM starinfo WHERE userId ="${user.id}"`).then(row => {
+			if (!row) {
+				sql.run("INSERT INTO starinfo (userId, stars, gifted, given) VALUES (?, ?, ?, ?)", [user.id, amount, (category == "gift" ? amount : 0), 0]);
+			} else {
+				sql.run(`UPDATE starinfo SET stars = ${row.stars + amount} WHERE userId = ${user.id}`);
+				if (category == "gift") {
+					sql.run(`UPDATE starinfo SET gifted = ${row.gifted + amount} WHERE userId = ${user.id}`);
+				}
+			}
+			if (category == "drop") {
+				sql.get(`SELECT * FROM starinfo WHERE userId ="${user.id}"`).then(row => {
+					channel.send(`${user.toString()} has grabbed a star! Their total star count is ${row.stars}.`);
+				});
+			}
+		}).catch(() => {
+			console.error;
+			sql.run("CREATE TABLE IF NOT EXISTS starinfo (userId TEXT, stars INTEGER, gifted INTEGER, given INTEGER)").then(() => {
+				sql.run("INSERT INTO starinfo (userId, stars, gifted, given) VALUES (?, ?, ?, ?)", [user.id, amount, (category == "gift" ? amount : 0), 0]);
+				if (category == "drop") {
+					sql.get(`SELECT * FROM starinfo WHERE userId ="${user.id}"`).then(row => {
+						channel.send(`${user.toString()} has grabbed a star! Their total star count is ${row.stars}.`);
 					});
 				}
-				else {
-					channel.send("A " + emoji + " hasn't dropped. Give yours to Shark, quickly! Say " + '"' + dropCommandCurrent + '".').then((msg) => {
-						setTimeout(function(){
-							if (dropped) { msg.delete(); dropped = false; };
-						},2 * 60 * 1000);
-					});
-				}
-
-				dropped = true;
-
-				dropTimer(false);
-			}
-			else {
-				activeChat = false;
-			}
-		});
-	}
-
-	function dropTimer(shorttimer) {
-		var _minutes = shorttimer ? Math.random() * (20 - 5) + 5 : Math.random() * (45 - 15) + 15;
-		client.setTimeout(dropStar, (_minutes * 60 * 1000));
-	}
-
-	function readData(callback) {
-	    fs.readFile("./data.json", function (err, data) {
-	        if (err) return callback(err)
-	        callback(null, data)
-	    })
-	}
-
-	function showLeaderboard() {
-		readData(function (err, data) {
-			if (err) throw err;
-			else {
-				var top10 = JSON.parse(data).sort(function(a, b) {
-				    return parseFloat(b.stars) - parseFloat(a.stars);
-				}).slice(0,10);
-
-				var top10_string = "";
-
-				for (var i = 1; i < top10.length; i++) {
-					top10_string += client.users.get(top10[i].userid).username + ": " + top10[i].stars + " star" + (top10[i].stars > 1 ? "s" : "") + "\n";
-				}
-
-				var top1 = client.users.get(top10[0].userid);
-				var embed = {
-					"title" : (emoji + " " + top1.username + ": " + top10[0].stars + " stars! " + emoji),
-					"description" : top10_string,
-				    "thumbnail": {
-				      "url": top1.avatarURL
-				    }
-				}
-
-				channel.send({embed});
-			}
-		});
-	}
-
-	function giveStar(member) {
-		readData(function (err, data) {
-			var data = JSON.parse(data);
-			var winner;
-
-			for (var i = 0; i < data.length; i++) {
-				if (data[i].userid == member.id) {
-					winner = i;
-					break;
-				}
-			}
-
-			if (winner == undefined) {
-				winner = data.length;
-				data[winner] = {
-					userid : member.id,
-					stars : 0
-				}
-			}
-
-			if (!fakeDrop) {
-				data[winner].stars++;
-
-				fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
-					if (err) throw err;
-				});
-
-				channel.send(member.toString() + " takes the cake! Their total star count is " + data[winner].stars + ".");
-				dropped = false;
-			}
-			else if (data[winner].stars > 0) {
-				data[winner].stars--;
-				data[0].stars++;
-
-				fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
-					if (err) throw err;
-				});
-
-				channel.send(member.toString() + " has given me one of their stars, how kind! My total star count is " + data[0].stars + ".");
-				dropped = false;
-			}
-		});
-	}
-
-
-	module.onMessage = function(msg) {
-		if (msg.channel != channel) return;
-
-		if (!activeChat) {
-			activeChat = true;
-			dropTimer(true);
-		}
-
-		var abuser = false;
-		Config.abusers.forEach((userid) => {
-			if (msg.member.id == userid) abuser = true;
+			});
 		});
 
-		switch (msg.content) {
-			case _pfx + "star leaderboard":
-				if (abuser) msg.delete();
-				else showLeaderboard();
-				break;
-			case dropCommandCurrent:
-				if (abuser) msg.delete();
-				else if (dropped) giveStar(msg.member);
-				break;
-		}
-
-	}
-
-	fs.exists('data.json', function(exists) {
-		if (!exists) {
-			var data = [{
-				userid : client.user.id,
-				stars : 0
-			}];
-
-			fs.writeFile('data.json', JSON.stringify(data), 'utf8', function(err){
-				if (err) throw err;
+		if (category == "gift") {
+			sql.get(`SELECT * FROM starinfo WHERE userId ="${donator.id}"`).then(row => {
+				sql.run(`UPDATE starinfo SET stars = ${row.stars - amount} WHERE userId = ${donator.id}`);
+				sql.run(`UPDATE starinfo SET given = ${row.given + amount} WHERE userId = ${donator.id}`);
 			});
 		}
-	});
+	}
 
-	dropTimer(false);
+
+	function showLeaderboard() {
+		var top10_string = "";
+		sql.all("SELECT * FROM starinfo ORDER BY stars DESC LIMIT 10").then(async rows => {
+			try {
+				await rows.forEach(async (r) => {
+					let user
+					try {
+						user = await client.fetchUser(r.userId, true);
+					} 
+					catch (err) {
+						console.log(err);
+					}
+
+					if (rows[0] == r) return;
+					top10_string += `${user.username}: ${r.stars} star${r.stars > 1 ? "s" : ""} \n`;
+				});
+			}
+			catch (err) {
+				console.log(err);
+			}
+
+			var embed = {
+				"title" : `${emoji} ${client.users.get(rows[0].userId).username}: ${rows[0].stars} stars! ${emoji}`,
+				"description" : top10_string,
+				"thumbnail": {
+					"url": client.users.get(rows[0].userId).avatarURL
+				}
+			}
+			channel.send({embed});
+		});
+	}
+	
+	module.onMessage = function(msg) {
+		lastMessage = msg;
+		if (msg.channel != channel) return;
+		if (is_dropped && msg.content == currentCommand)
+		{
+			awardStar(msg.author, "drop", null);
+			is_dropped = false;
+		}
+
+		var message = msg.content;
+		if (message[0] != "!") return;
+
+		message = message.replace("!", "").split(" ");
+
+		var command = message[0]; message.shift();
+		var params = message;
+
+		if (command == "star" && params[0] == "count" && params.length == 1)
+		{
+			sql.get(`SELECT * FROM starinfo WHERE userId ="${msg.author.id}"`).then(row => {
+				if (!row) return msg.reply("you do not have any stars.");
+				msg.reply(`you have ${row.stars} stars`);
+			});
+		}
+
+		if (command == "star" && params[0] == "gift" && params.length == 3)
+		{
+			var user = msg.mentions.users.first();
+			if (user == undefined) return msg.reply("that user does not exist.");
+			if (user == msg.author) return msg.reply("jokes on you");
+			var amount = parseInt(params[2]);
+			if (isNaN(amount) || amount == 0) return msg.reply("that is not an amount I recognise.");
+
+			sql.get(`SELECT * FROM starinfo WHERE userId ="${msg.author.id}"`).then(row => {
+				if (!row || row.stars < amount) return msg.reply("you do not have enough stars.");
+				awardStar(user, "gift", amount, msg.author);
+				msg.channel.send(`${msg.author.toString()} has given ${user.toString()} ${amount} stars!`);
+			});
+		}
+
+		if (command == "star" && params[0] == "leaderboard" && params.length == 1)
+		{
+			showLeaderboard();
+		}
+	}
 
 	return module;
 }

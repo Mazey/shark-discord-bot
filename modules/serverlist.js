@@ -7,58 +7,56 @@ const request = require("request")
 module.exports = function(client) {
 	var module = {};
 
-	var channel, message;
-	channel = client.channels.get(config.server_list.channel);
-	if (!channel) return;
-	channel.fetchMessage(config.server_list.message).then(msg => {
-		message = msg;
-		refreshServers();
-	}).catch(err => {
-		return; // Don't do anything if the message doesn't exist
-	});
-
+	refreshServers();
 	function refreshServers() {
-		request({
-		    url: 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]',
-		    json: true
-		}, (error, response, body) => {
-			if (error) return;
+		var channel;
+		channel = client.channels.get(config.server_list.channel);
+		if (!channel) return;
+		channel.fetchMessage(config.server_list.message).then(message => {
+			request({
+				url: 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]',
+				json: true
+			}, (error, response, body) => {
+				if (error) return;
 
-			let servers = body.serverList;
+				let servers = body.serverList;
 
-			// Sort servers and players
-			servers = servers.sort((a, b) => {
-				if (a.currentPlayers === b.currentPlayers) {
-					return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
-				}
-				return b.currentPlayers - a.currentPlayers;
-			});
-			servers.forEach(server => {
-				server.playerList.sort((a, b) => {
-					return a.toUpperCase().localeCompare(b.toUpperCase());
+				// Sort servers and players
+				servers = servers.sort((a, b) => {
+					if (a.currentPlayers === b.currentPlayers) {
+						return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
+					}
+					return b.currentPlayers - a.currentPlayers;
 				});
+				servers.forEach(server => {
+					server.playerList.sort((a, b) => {
+						return a.toUpperCase().localeCompare(b.toUpperCase());
+					});
+				});
+
+				// Make message content
+				let players = servers.reduce((t, x) => t + x.currentPlayers, 0);
+				let text = '```md\n' + `# Server list - ${servers.length} ${plural(servers.length, 'server')}, ${players} ${plural(players, 'player')}` + '``````diff\n';
+				text += servers.map(server => {
+					let prefix = (/(?=^KAG Official \w+ (AUS|AU|EU|US|USA)\b)|(?=^Official Modded Server (AUS|AU|EU|US|USA)\b)/g.test(server.name)) ? '-' : '+';
+					let full = (server.playerPercentage >= 1) ? ' [FULL]' : '';
+					let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} ${plural(server.spectatorPlayers, 'spec')})` : '';
+					return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join('  ')}`;
+				}).join('\n\n') + '\n```';
+
+				// Update message, channel and presence
+				if (config.server_list.channel_name) channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
+				if (config.server_list.presence) client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
+				message.edit(text).catch(console.error);
+
+				// Loop on an interval
+				let interval = config.server_list.interval * 1000;
+				let delay = interval - new Date() % interval;
+				setTimeout(refreshServers, delay);
 			});
-
-			// Make message content
-			let players = servers.reduce((t, x) => t + x.currentPlayers, 0);
-			let text = '```md\n' + `# Server list - ${servers.length} ${plural(servers.length, 'server')}, ${players} ${plural(players, 'player')}` + '``````diff\n';
-			text += servers.map(server => {
-				let prefix = (/(?=^KAG Official \w+ (AUS|AU|EU|US|USA)\b)|(?=^Official Modded Server (AUS|AU|EU|US|USA)\b)/g.test(server.name)) ? '-' : '+';
-				let full = (server.playerPercentage >= 1) ? ' [FULL]' : '';
-				let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} ${plural(spec, 'spec')})` : '';
-				return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join('  ')}`;
-			}).join('\n\n') + '\n```';
-
-			// Update message, channel and presence
-			if (config.server_list.channel_name) channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
-			if (config.server_list.presence) client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
-			message.edit(text).catch(console.error);
+		}).catch(err => {
+			channel.send('```\nServer list goes here\n```');
 		});
-
-		// Loop on an interval
-		let interval = config.server_list.interval * 1000;
-		let delay = interval - new Date() % interval;
-		setTimeout(refreshServers, delay);
 	}
 
 	// Aligns text to the left, right or center

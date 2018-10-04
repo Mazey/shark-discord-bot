@@ -2,17 +2,18 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
 
-const RegionalRoles = require("./modules/regionalroles.js")();
-const OpenRoles = require("./modules/openroles.js")();
-const Help = require("./modules/help.js");
-const Ping = require("./modules/ping.js")();
+// const RegionalRoles = require("./modules/regionalroles.js")();
+// const OpenRoles = require("./modules/openroles.js")();
+// const Help = require("./modules/help.js");
 var StarGame;
 
 client.on('ready', () => {
-	client.guilds.first().fetchMembers();
-	StarGame = require("./modules/stargame.js")(client);
-  	client.user.setGame('with fishies');
+	console.log('Bot started!');
 
+	client.guilds.first().fetchMembers();
+	client.user.setPresence({ status: 'online', game: { name: `with fishies` } });
+
+	// StarGame = require("./modules/stargame.js")(client);
 	ServerList = require("./modules/serverlist.js")(client);
 });
 
@@ -22,6 +23,8 @@ client.on('guildMemberAdd', (member) => {
 });
 
 client.on('message', (msg) => {
+	if (msg.author.bot) return;
+
 	StarGame.onMessage(msg);
 
 	if (msg.content[0] == config.prefix) { // commands
@@ -35,11 +38,6 @@ client.on('message', (msg) => {
 
 		if (cmd.command == "help") {
 			Help.send(msg.member, is_mod(msg.member));
-			return;
-		}
-
-		if (cmd.command == "ping") {
-			Ping.pong(msg.channel, is_mod(msg.member));
 			return;
 		}
 	}

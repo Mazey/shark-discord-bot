@@ -2,9 +2,9 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
 
-// const RegionalRoles = require("./modules/regionalroles.js")();
-// const OpenRoles = require("./modules/openroles.js")();
-// const Help = require("./modules/help.js");
+const RegionalRoles = require("./modules/regionalroles.js")();
+const OpenRoles = require("./modules/openroles.js")();
+const Help = require("./modules/help.js");
 var StarGame;
 
 client.on('ready', () => {
@@ -13,7 +13,7 @@ client.on('ready', () => {
 	client.guilds.first().fetchMembers();
 	client.user.setPresence({ status: 'online', game: { name: `with fishies` } });
 
-	// StarGame = require("./modules/stargame.js")(client);
+	StarGame = require("./modules/stargame.js")(client);
 	ServerList = require("./modules/serverlist.js")(client);
 });
 

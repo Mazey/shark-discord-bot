@@ -1,14 +1,17 @@
 // Made by epsilon#3892
 // https://forum.thd.vg/members/16800/
 
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+var config = require("../config.json");
+var url = 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]';
+var request = require("request")
 
 module.exports = function(client) {
-	var Config 	= require("./../config.js");
-	var channel = client.channels.get(Config.servers_channel);
+	var module = {};
+
+	var channel, message;
+	channel = client.channels.get(config.server_list.channel);
 	if (!channel) return;
-	var message;
-	channel.fetchMessage(Config.servers_message).then(msg => {
+	channel.fetchMessage(config.server_list.message).then(msg => {
 		message = msg;
 		loop();
 	}).catch(err => {
@@ -16,11 +19,16 @@ module.exports = function(client) {
 	});
 
 	function loop() {
-		httpGetAsync('https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]', servers => {
-			if (!servers) return; // API down?
+		request({
+		    url: url,
+		    json: true
+		}, function (error, response, body) {
+			if (error) return;
+
+			let servers = body.serverList;
 
 			// Sort servers and players
-			servers = servers.serverList.sort((a, b) => {
+			servers = servers.sort((a, b) => {
 				if (a.currentPlayers === b.currentPlayers) {
 					return a.name.toUpperCase().localeCompare(b.name.toUpperCase());
 				}
@@ -43,30 +51,15 @@ module.exports = function(client) {
 			}).join('\n\n') + '\n```';
 
 			// Update message, channel and presence
-			message.channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
+			channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
 			client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
 			message.edit(text).catch(console.error);
 		});
 
 		// Loop on an interval
-		let interval = Config.servers_interval * 1000;
+		let interval = config.server_list.interval * 1000;
 		let delay = interval - new Date() % interval;
-		setTimeout(loop, delay);
-	}
-
-	// Fetches KAG servers
-	function httpGetAsync(url, callback) {
-		let xmlHttp = new XMLHttpRequest();
-		xmlHttp.onreadystatechange = () => {
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-				return callback(JSON.parse(xmlHttp.responseText));
-			}
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-				return callback(null);
-			}
-		}
-		xmlHttp.open('GET', url, true);
-		xmlHttp.send(null);
+		setTimeout(module.loop, delay);
 	}
 
 	// Aligns text to the left, right or center

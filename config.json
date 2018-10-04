@@ -1,5 +1,5 @@
 {
-	"token": "bot_token",
+	"token": "NDkzNzg3MDQyNTc3MzgzNDI0.DpeKfA.ULyLymBveECnVqeuxDdQH858abc",
 
 	"welcome_channel": "channel_id_here",
 	"rules_channel": "channel_id_here",
@@ -13,5 +13,11 @@
 
 	"regional_roles": ["EU", "OC", "NA", "SA", "AN", "AF", "AS"],
 
-	"open_roles": ["open", "roles", "here"]
+	"open_roles": ["open", "roles", "here"],
+
+	"server_list": {
+		"channel": "493790991468331008",
+		"message": "493795063281745920",
+		"interval": "60"
+	}
 }

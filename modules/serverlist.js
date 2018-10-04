@@ -2,7 +2,6 @@
 // https://forum.thd.vg/members/16800/
 
 var config = require("../config.json");
-var url = 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]';
 var request = require("request")
 
 module.exports = function(client) {
@@ -20,7 +19,7 @@ module.exports = function(client) {
 
 	function loop() {
 		request({
-		    url: url,
+		    url: 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]',
 		    json: true
 		}, function (error, response, body) {
 			if (error) return;

@@ -18,6 +18,6 @@
 	"server_list": {
 		"channel": "channel_id_here",
 		"message": "message_id_here",
-		"interval": "update_interval_here"
+		"interval": "interval_in_seconds"
 	}
 }

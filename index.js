@@ -16,7 +16,7 @@ client.on('ready', () => {
 	PlayerCount.updatePlayerCount();
 	client.setInterval(PlayerCount.updatePlayerCount, 60 * 1000 * 2);
 
-	ServerList =  require("./modules/serverlist.js")(client);
+	ServerList = require("./modules/serverlist.js")(client);
 });
 
 client.on('guildMemberAdd', (member) => {

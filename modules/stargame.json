@@ -1,0 +1,9 @@
+{
+  "emoji": "emoji_id_here",
+  "channel": "channel_id_here",
+  "commands": ["array of", "star-grabbing", "commands here"],
+
+  "delay": 50,
+  "delay_random": 10,
+  "delete_timer": 1
+}

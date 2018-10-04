@@ -5,16 +5,13 @@ const config = require("./config.json");
 const RegionalRoles = require("./modules/regionalroles.js")();
 const OpenRoles = require("./modules/openroles.js")();
 const Help = require("./modules/help.js");
+const Ping = require("./modules/ping.js")();
 var StarGame;
 
 client.on('ready', () => {
 	client.guilds.first().fetchMembers();
 	StarGame = require("./modules/stargame.js")(client);
   	client.user.setGame('with fishies');
-
-	PlayerCount = require("./modules/playercount.js")(client);
-	PlayerCount.updatePlayerCount();
-	client.setInterval(PlayerCount.updatePlayerCount, 60 * 1000 * 2);
 
 	ServerList = require("./modules/serverlist.js")(client);
 });
@@ -40,6 +37,11 @@ client.on('message', (msg) => {
 			Help.send(msg.member, is_mod(msg.member));
 			return;
 		}
+
+		if (cmd.command == "ping") {
+			Ping.pong(msg.channel, is_mod(msg.member));
+			return;
+		}
 	}
 });
 
@@ -60,8 +62,8 @@ function is_mod(member) {
 	var mod = false;
 	config.mod_roles.forEach((modrole) => {
 		var modRole = member.guild.roles.find("name", modrole);
-		if (member.roles.has(modRole.id)) {
-			mod = true;;
+		if (modRole && member.roles.has(modRole.id)) {
+			mod = true;
 		}
 	});
 

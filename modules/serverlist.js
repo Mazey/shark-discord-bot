@@ -1,8 +1,8 @@
 // Made by epsilon#3892
 // https://forum.thd.vg/members/16800/
 
-var config = require("../config.json");
-var request = require("request")
+const config = require("../config.json");
+const request = require("request")
 
 module.exports = function(client) {
 	var module = {};
@@ -12,16 +12,16 @@ module.exports = function(client) {
 	if (!channel) return;
 	channel.fetchMessage(config.server_list.message).then(msg => {
 		message = msg;
-		loop();
+		refreshServers();
 	}).catch(err => {
 		return; // Don't do anything if the message doesn't exist
 	});
 
-	function loop() {
+	function refreshServers() {
 		request({
 		    url: 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]',
 		    json: true
-		}, function (error, response, body) {
+		}, (error, response, body) => {
 			if (error) return;
 
 			let servers = body.serverList;
@@ -45,20 +45,20 @@ module.exports = function(client) {
 			text += servers.map(server => {
 				let prefix = (/(?=^KAG Official \w+ (AUS|AU|EU|US|USA)\b)|(?=^Official Modded Server (AUS|AU|EU|US|USA)\b)/g.test(server.name)) ? '-' : '+';
 				let full = (server.playerPercentage >= 1) ? ' [FULL]' : '';
-				let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} spec)` : '';
+				let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} ${plural(spec, 'spec')})` : '';
 				return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join('  ')}`;
 			}).join('\n\n') + '\n```';
 
 			// Update message, channel and presence
-			channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
-			client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
+			if (config.server_list.channel_name) channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
+			if (config.server_list.presence) client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
 			message.edit(text).catch(console.error);
 		});
 
 		// Loop on an interval
 		let interval = config.server_list.interval * 1000;
 		let delay = interval - new Date() % interval;
-		setTimeout(module.loop, delay);
+		setTimeout(refreshServers, delay);
 	}
 
 	// Aligns text to the left, right or center

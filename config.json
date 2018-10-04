@@ -1,5 +1,5 @@
 {
-	"token": "NDkzNzg3MDQyNTc3MzgzNDI0.DpeKfA.ULyLymBveECnVqeuxDdQH858abc",
+	"token": "bot_token",
 
 	"welcome_channel": "channel_id_here",
 	"rules_channel": "channel_id_here",
@@ -16,8 +16,8 @@
 	"open_roles": ["open", "roles", "here"],
 
 	"server_list": {
-		"channel": "493790991468331008",
-		"message": "493795063281745920",
-		"interval": "60"
+		"channel": "channel_id_here",
+		"message": "message_id_here",
+		"interval": "update_interval_here"
 	}
 }

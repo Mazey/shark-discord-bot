@@ -5,8 +5,6 @@ const config = require("../config.json");
 const request = require("request")
 
 module.exports = function(client) {
-	var module = {};
-
 	refreshServers();
 	function refreshServers() {
 		// Check if channel and message exists
@@ -77,6 +75,4 @@ module.exports = function(client) {
 	function plural(val, text, suffix = "s", trim = 0) {
 		return (val === 1) ? text : text.substring(0, text.length - trim) + suffix;
 	}
-
-	return module;
 }

@@ -9,12 +9,14 @@ module.exports = function(client) {
 
 	refreshServers();
 	function refreshServers() {
+		// Check if channel and message exists
 		var channel;
 		channel = client.channels.get(config.server_list.channel);
 		if (!channel) return;
 		channel.fetchMessage(config.server_list.message).then(message => {
+			// Get KAG server data
 			request({
-				url: 'https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]',
+				url: `https://api.kag2d.com/v1/game/thd/kag/servers?filters=[{"field":"current","op":"eq","value":"true"},{"field":"connectable","op":"eq","value":true},{"field":"currentPlayers","op":"gt","value":"0"}]`,
 				json: true
 			}, (error, response, body) => {
 				if (error) return;
@@ -35,18 +37,18 @@ module.exports = function(client) {
 				});
 
 				// Make message content
-				let players = servers.reduce((t, x) => t + x.currentPlayers, 0);
-				let text = '```md\n' + `# Server list - ${servers.length} ${plural(servers.length, 'server')}, ${players} ${plural(players, 'player')}` + '``````diff\n';
+				let players = servers.reduce((total, server) => total + server.currentPlayers, 0);
+				let text = "```md\n" + `# Server list - ${servers.length} ${plural(servers.length, "server")}, ${players} ${plural(players, "player")}` + "``````diff\n";
 				text += servers.map(server => {
-					let prefix = (/(?=^KAG Official \w+ (AUS|AU|EU|US|USA)\b)|(?=^Official Modded Server (AUS|AU|EU|US|USA)\b)/g.test(server.name)) ? '-' : '+';
-					let full = (server.playerPercentage >= 1) ? ' [FULL]' : '';
-					let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} ${plural(server.spectatorPlayers, 'spec')})` : '';
-					return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join('  ')}`;
-				}).join('\n\n') + '\n```';
+					let prefix = (/(?=^KAG Official \w+ (AUS|AU|EU|US|USA)\b)|(?=^Official Modded Server (AUS|AU|EU|US|USA)\b)/g.test(server.name)) ? "-" : "+";
+					let full = (server.playerPercentage >= 1) ? " [FULL]" : "";
+					let specs = (server.spectatorPlayers > 0) ? ` (${server.spectatorPlayers} ${plural(server.spectatorPlayers, "spec")})` : "";
+					return `${prefix} ${alignText(server.name, 50, -1)} ${alignText(server.currentPlayers, 3, 1)}/${server.maxPlayers}${full}${specs}\n​${server.playerList.join("  ")}`;
+				}).join("\n\n") + "\n```";
 
 				// Update message, channel and presence
-				if (config.server_list.channel_name) channel.setName(`${servers.length}-${plural(servers.length, 'server')}_${players}-${plural(players, 'player')}`);
-				if (config.server_list.presence) client.user.setPresence({ status: 'online', game: { name: `with ${players} ${plural(players, 'fishy', 'ies', 1)}` } });
+				if (config.server_list.channel_name) channel.setName(`${servers.length}-${plural(servers.length, "server")}_${players}-${plural(players, "player")}`);
+				if (config.server_list.presence) client.user.setPresence({ status: "online", game: { name: `with ${players} ${plural(players, "fishy", "ies", 1)}` } });
 				message.edit(text).catch(console.error);
 
 				// Loop on an interval
@@ -55,14 +57,15 @@ module.exports = function(client) {
 				setTimeout(refreshServers, delay);
 			});
 		}).catch(err => {
-			channel.send('```\nServer list goes here\n```');
+			// Send message to channel so its ID can be manually re-added to config
+			channel.send("```\nServer list goes here\n```");
 		});
 	}
 
 	// Aligns text to the left, right or center
-	function alignText(text, width, align, padChar = ' ') {
+	function alignText(text, width, align, padChar = " ") {
 		text = text.toString();
-		if (text.length > width) return text.substr(0, width - 1) + '…';
+		if (text.length > width) return text.substr(0, width - 1) + "…";
 		width -= text.length;
 		if (align < 0) return text + padChar.repeat(width);
 		if (align > 0) return padChar.repeat(width) + text;
@@ -71,8 +74,8 @@ module.exports = function(client) {
 	}
 
 	// Pluralizes the word
-	function plural(val, text, suffix = 's', trim = 0) {
-		return val === 1 ? text : text.substring(0, text.length - trim) + suffix;
+	function plural(val, text, suffix = "s", trim = 0) {
+		return (val === 1) ? text : text.substring(0, text.length - trim) + suffix;
 	}
 
 	return module;

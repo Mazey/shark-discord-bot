@@ -7,52 +7,45 @@ const OpenRoles = require("./modules/openroles.js")();
 const Help = require("./modules/help.js");
 var StarGame;
 
-client.on('ready', () => {
-	console.log('Bot started!');
+client.on("ready", () => {
+	console.log("Bot started!");
 
 	client.guilds.first().fetchMembers();
-	client.user.setPresence({ status: 'online', game: { name: `with fishies` } });
+	client.user.setPresence({ status: "online", game: { name: "with fishies" } });
 
 	StarGame = require("./modules/stargame.js")(client);
 	ServerList = require("./modules/serverlist.js")(client);
 });
 
-client.on('guildMemberAdd', (member) => {
+client.on("guildMemberAdd", (member) => {
   var channel = client.channels.get(config.welcome_channel);
   channel.send(`Welcome ${member.toString()}! Please read the <#${config.rules_channel}> and check out <#${config.information_channel}>.`);
 });
 
-client.on('message', (msg) => {
+client.on("message", (msg) => {
 	if (msg.author.bot) return;
 
 	StarGame.onMessage(msg);
 
-	if (msg.content[0] == config.prefix) { // commands
-		var cmd = commandify(msg);
+	if (msg.content.indexOf(config.prefix)) return;
+	var cmd = commandify(msg); // commands
 
-		if (cmd.command == "role") {
-			OpenRoles.onCommand(msg, cmd);
-			RegionalRoles.onCommand(msg, cmd);
-			return;
-		}
+	if (cmd.command === "role") {
+		OpenRoles.onCommand(msg, cmd);
+		RegionalRoles.onCommand(msg, cmd);
+		return;
+	}
 
-		if (cmd.command == "help") {
-			Help.send(msg.member, is_mod(msg.member));
-			return;
-		}
+	if (cmd.command === "help") {
+		Help.send(msg.member, is_mod(msg.member));
+		return;
 	}
 });
 
 function commandify(msg) {
-	var cmd = new Object();
-
-	_content = msg.content.split(" ");
-
-	cmd.command = _content[0].replace(config.prefix, "");
-
-	_content.shift();
-	cmd.params = _content;
-
+	var cmd = {};
+	cmd.params = msg.content.slice(config.prefix.length).trim().split(/ +/g);
+	cmd.command = cmd.params.shift().toLowerCase();
 	return cmd;
 }
 

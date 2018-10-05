@@ -9,8 +9,6 @@
 
 	"mod_roles": ["Administrator", "Moderator"],
 
-	"steam_api_key": "steam api key for player count here",
-
 	"regional_roles": ["EU", "OC", "NA", "SA", "AN", "AF", "AS"],
 
 	"open_roles": ["open", "roles", "here"],

@@ -9,9 +9,15 @@
 
 	"mod_roles": ["Administrator", "Moderator"],
 
-	"steam_api_key": "steam api key for player count here",
-
 	"regional_roles": ["EU", "OC", "NA", "SA", "AN", "AF", "AS"],
 
-	"open_roles": ["open", "roles", "here"]
+	"open_roles": ["open", "roles", "here"],
+
+	"server_list": {
+		"channel": "channel_id_here",
+		"message": "message_id_here",
+		"interval": "interval_in_seconds",
+		"channel_name": true,
+		"presence": true
+	}
 }

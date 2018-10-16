@@ -19,5 +19,12 @@
 		"interval": "interval_in_seconds",
 		"channel_name": true,
 		"presence": true
+	},
+
+	"find_command": {
+		"player_count": true,
+		"server_link": true,
+		"delete_command": true,
+		"delete_response": "delay_in_seconds"
 	}
 }

@@ -5,6 +5,7 @@ const config = require("./config.json");
 const RegionalRoles = require("./modules/regionalroles.js")();
 const OpenRoles = require("./modules/openroles.js")();
 const Help = require("./modules/help.js");
+const Find = require("./modules/find.js")();
 var StarGame;
 
 client.on("ready", () => {
@@ -39,6 +40,10 @@ client.on("message", (msg) => {
 	if (cmd.command === "help") {
 		Help.send(msg.member, is_mod(msg.member));
 		return;
+	}
+
+	if (cmd.command === "find") {
+		Find.onCommand(msg, cmd);
 	}
 });
 

@@ -15,7 +15,6 @@ client.on("ready", () => {
 	client.user.setPresence({ status: "online", game: { name: "with fishies" } });
 
 	StarGame = require("./modules/stargame.js")(client);
-	require("./modules/serverlist.js")(client);
 });
 
 client.on("guildMemberAdd", (member) => {
